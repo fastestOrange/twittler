@@ -12,7 +12,7 @@ streams.users.sharksforcheap = [];
 streams.users.mracus = [];
 streams.users.douglascalhoun = [];
 window.users = Object.keys(streams.users);
-
+streams.users.colors={"shawndrost": "#FDA492","sharksforcheap": "AliceBlue","mracus": "Cornsilk","douglascalhoun": "Bisque" }
 // utility function for adding tweets to our data structures
 var addTweet = function(newTweet){
   var username = newTweet.user;

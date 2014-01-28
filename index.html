@@ -3,22 +3,128 @@
   <head>
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
+	<style>
+	body{
+		background-color:#ffffff;
+	}
+	
+	.menu > button{
+		margin:10px;
+		font-size: 1.1em;
+		width: 130px;
+		height: 30px;
+	}
+	a { cursor: pointer; 
+		color: blue;
+		font-size:1.1em;
+		margin: 3px;
+		 }
+	 a:hover,a.hover { 
+		text-decoration: underline;
+		color: DarkBlue;
+	 }
+	 a:active{
+		font-weight: 600;
+		font-size:1.1em;
+	 }
+	.message_body{
+		font-family: Arial, "MS Trebuchet", sans-serif;
+	}
+	
+	.tweetbody{
+		border:1px inset #008040;
+		margin: 5px;
+	}
+	
+	.message_wrapper{
+		padding: 5px;
+	}
+	.createTime{
+		font-size:.8em;
+		color:#400080;
+	}
+	</style>
   </head>
   <body>
+	<div id="wrapper">
+		<div id="appHeader">
+			<div id="addUser">
+				<label for="addUser">Tweet Anonymously</label>
+				<input type="text" name="anonTweet"/>
+				<button id="anonTweet">Post</button>
+			</div>
+			<div class="menu">
+				<button id="all">All Users</button>
+			</div>
+		</div>
+		<div>
+			<div id="appBody">
+				<h2 id="title">All Users</h2>
+				<div id="tweetbox">
+					
+				</div>
+			</div>
+		</div>
+	</div>
+	
     <script>
 
       $(document).ready(function(){
-        var $body = $('body');
-        $body.html('');
+	
+	//set stream object and remove All Users button
+		var streamObj = streams.home;
+		$('#all').hide();
+		
+		//
+	
+	//TO DO: Display list of users
+		
+	// TO DO: Tweet Anonymously
+	
+	// TO DO: Add User and sign in to post from added user
+	
+	// clear page, get feed, create tweets, append to page, set name as link which changes feed
+		var updateTweets = function(feedName){
+			var tweetbox = $('#tweetbox').html('');
+			var index = feedName.length - 1;
+			while(index >= 0){
+				var tweet = feedName[index];
+				var timeArray = tweet.created_at.toString().split(' ');
+				var tweetBody = $('<div class="tweetbody"></div>');
+				var link = '<a id="'+tweet.user+'" >BY: @' + tweet.user + '></a>';
+				var color = streams.users.colors[tweet.user];
+				tweetBody.html('<div class="message_wrapper" style="background-color:'+color+'"><p id="'+tweet.user+'"><br/><span class="message_body">'+ tweet.message  +'</span>,<br/>'+link+'<br/><span class="createTime"><em> at '+ timeArray[4])+'</em></span></p></div>';
+				$(tweetbox).append(tweetBody)	
+				$('#tweetbox a').on('click', function(e){
+					e.preventDefault();
+					var currentID = $(this).attr('id');
+					streamObj = streams.users[currentID];
+					updateTweets(streamObj);
+					$('#title').text(currentID);
+					$('#all').show();
+				})
+				index -= 1;
+			}
+		}
+		
+// All User Feed button
+		$('#all').click(function(e){
+				e.preventDefault();
+				streamObj = streams.home;
+				updateTweets(streamObj);
+				$('#title').text('All Users')
+				$('#all').hide();
+		});
+			
+	
+// automated tweet publishing
+		var displayTweets = function(){
+			updateTweets(streamObj);
+			setTimeout(displayTweets,5000);
+		};	
+		displayTweets();
+	
 
-        var index = streams.home.length - 1;
-        while(index >= 0){
-          var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.appendTo($body);
-          index -= 1;
-        }
 
       });
 
